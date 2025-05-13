@@ -29,7 +29,7 @@ Created as part of my portfolio.
 - Jira (Scrum task management)
 
 ## 📁 Project Structure
-
+```
 ActionRPG_Demo/
 ├─ Backup/
 ├─ Binaries/
@@ -50,7 +50,7 @@ ActionRPG_Demo/
 ├─ .gitignore
 ├─ ActionRPG_Demo.sln
 ├─ ActionRPG_Demo.uproject
-
+```
 ## 📦 Asset Usage & Licensing
 
 Assets used in this project are sourced from **Fab by Epic Games** and **Unreal Marketplace**, and are **excluded** from the repository due to license restrictions.
