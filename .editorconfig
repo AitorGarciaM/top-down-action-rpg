@@ -1,0 +1,26 @@
+# Unreal Engine Style Guide
+# Place this file at the root of your UE project.
+
+root = true
+
+[*.{h,cpp}]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+insert_final_newline = true
+charset = utf-8
+
+# UE-specific rules
+csharp_style_var_for_built_in_types = false
+csharp_style_var_elsewhere = false
+
+# Naming conventions
+dotnet_naming_rule.classes_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.classes_should_be_pascal_case.symbols = class_symbols
+dotnet_naming_rule.classes_should_be_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.class_symbols.applicable_kinds = class
+dotnet_naming_symbols.class_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.class_symbols.required_modifiers = *
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
