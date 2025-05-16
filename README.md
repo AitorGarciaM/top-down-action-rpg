@@ -39,6 +39,7 @@ ActionRPG_Demo/
 │  │  ├─ AI/
 │  │  ├─ Characters/
 │  │  ├─ Core/
+│  │  │  ├─ Input/
 │  │  ├─ Maps/
 │  │  │  ├─ Dev/
 │  │  ├─ UI/
@@ -56,6 +57,8 @@ ActionRPG_Demo/
 Assets used in this project are sourced from **Fab by Epic Games** and **Unreal Marketplace**, and are **excluded** from the repository due to license restrictions.
 
 Please download required assets separately from the Epic Games Launcher.
+
+- Mannequins Asset Pack (https://www.fab.com/listings/ad542ee6-34d0-4828-a56c-13846cd649d0)
 
 ## 🚀 Getting Started
 
