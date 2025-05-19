@@ -58,7 +58,18 @@ void APlayerControllerARPG::BeginPlay()
 {
 	Super::BeginPlay();
 	bShowMouseCursor = true;
-	BenchmarkHitDetection();
+	
+	if (GetCharacter() == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Character is Null"));
+	}
+
+	CharacterARPG = Cast<ACharacterARPG>(GetCharacter());
+
+	if (CharacterARPG == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("CharacterARPG is Null"));
+	}
 }
 
 void APlayerControllerARPG::SetupInputComponent()
@@ -77,6 +88,9 @@ void APlayerControllerARPG::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationAction, ETriggerEvent::Triggered, this, &APlayerControllerARPG::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationAction, ETriggerEvent::Completed, this, &APlayerControllerARPG::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationAction, ETriggerEvent::Canceled, this, &APlayerControllerARPG::OnSetDestinationReleased);
+
+		// Setup mouse right click.
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerControllerARPG::OnInputAttack);
 	}
 }
 
@@ -115,4 +129,35 @@ void APlayerControllerARPG::OnSetDestinationReleased()
 	}
 
 	PressTime = 0.f;
+}
+
+void APlayerControllerARPG::OnInputAttack()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Attack Detected"));
+	
+	if (!b_isAttacking)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Attack Performed"));
+		b_isAttacking = true;
+		OnAttack();
+	}
+}
+
+void APlayerControllerARPG::OnAttack()
+{
+	FTimerHandle AttackTimerHandle;
+	
+	if (CharacterARPG != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, TEXT("Attacking"));
+		CharacterARPG->PerformAttack();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &APlayerControllerARPG::ResetAttack, AttackCooldown, false);
+}
+
+void APlayerControllerARPG::ResetAttack()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, TEXT("Attack Reseted"));
+	b_isAttacking = false;
 }

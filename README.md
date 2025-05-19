@@ -59,6 +59,7 @@ Assets used in this project are sourced from **Fab by Epic Games** and **Unreal 
 Please download required assets separately from the Epic Games Launcher.
 
 - Mannequins Asset Pack (https://www.fab.com/listings/ad542ee6-34d0-4828-a56c-13846cd649d0)
+- Paragon: Sparrow (https://www.fab.com/listings/7d76ddf0-d9ce-4d00-939e-d72793534d01)
 
 ## 🚀 Getting Started
 
