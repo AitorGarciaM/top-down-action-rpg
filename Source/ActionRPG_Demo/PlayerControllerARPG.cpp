@@ -57,19 +57,10 @@ void APlayerControllerARPG::BenchmarkHitDetection()
 void APlayerControllerARPG::BeginPlay() 
 {
 	Super::BeginPlay();
+	// Enable Cursos on window
 	bShowMouseCursor = true;
-	
-	if (GetCharacter() == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Character is Null"));
-	}
 
 	CharacterARPG = Cast<ACharacterARPG>(GetCharacter());
-
-	if (CharacterARPG == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("CharacterARPG is Null"));
-	}
 }
 
 void APlayerControllerARPG::SetupInputComponent()
@@ -94,6 +85,7 @@ void APlayerControllerARPG::SetupInputComponent()
 	}
 }
 
+// Reset the movement on change desired destination
 void APlayerControllerARPG::OnInputStarted()
 {
 	StopMovement();
@@ -119,10 +111,9 @@ void APlayerControllerARPG::OnSetDestinationTriggered()
 	}
 }
 
+// Set destination with single click
 void APlayerControllerARPG::OnSetDestinationReleased()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Released"));
-
 	if (PressTime <= ShortPressThreshold)
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CacheDestination);
@@ -132,14 +123,33 @@ void APlayerControllerARPG::OnSetDestinationReleased()
 }
 
 void APlayerControllerARPG::OnInputAttack()
-{
-	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Attack Detected"));
-	
+{	
 	if (!b_isAttacking)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Attack Performed"));
 		b_isAttacking = true;
-		OnAttack();
+
+		FHitResult Hit;
+		bool bHitSucceded = GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
+
+		if (bHitSucceded)
+		{
+			// Rotates Character to mouse position
+			FVector TargetLocation = Hit.Location;
+			FVector ActorLocation = GetPawn()->GetActorLocation();
+
+			TargetLocation.Z = ActorLocation.Z;
+
+			FVector Direction = (TargetLocation - ActorLocation).GetSafeNormal();
+
+			if (!Direction.IsNearlyZero())
+			{
+				FRotator TargetRotator = Direction.Rotation();
+				GetPawn()->SetActorRotation(TargetRotator);
+			}
+
+			StopMovement();
+			OnAttack();
+		}
 	}
 }
 
@@ -149,15 +159,15 @@ void APlayerControllerARPG::OnAttack()
 	
 	if (CharacterARPG != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, TEXT("Attacking"));
+		// Performs Attack Animation
 		CharacterARPG->PerformAttack();
 	}
 
+	// Starts the attack cooldown timer.
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &APlayerControllerARPG::ResetAttack, AttackCooldown, false);
 }
 
 void APlayerControllerARPG::ResetAttack()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, TEXT("Attack Reseted"));
 	b_isAttacking = false;
 }

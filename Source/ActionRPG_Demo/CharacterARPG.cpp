@@ -38,13 +38,36 @@ ACharacterARPG::ACharacterARPG()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+// Performs attack animation when character attacks
 void ACharacterARPG::PerformAttack()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Character Attack Performed"));
 	if (AttackMontage != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Attack Animation Performed"));
 		PlayAnimMontage(AttackMontage);
+		PerformHit();
+	}
+}
+
+// Executes collision against enemy characters
+void ACharacterARPG::PerformHit()
+{
+	FHitResult Hit;
+
+	// Set line trace from the attack socket to a point 1000cm ahead of it.
+	//FVector Start = GetMesh()->GetSocketTransform(AttackOffsetSocket, ERelativeTransformSpace::RTS_World).GetLocation();
+	FVector Start = GetActorLocation();
+	FVector End = Start + GetActorForwardVector() * 1000.f; 
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this); // Line trace will ignore this character when triggered
+
+	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Pawn, QueryParams);
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.f);
+
+	if (Hit.bBlockingHit && IsValid(Hit.GetActor()))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Trace hit actor: %s"), *Hit.GetActor()->GetName()));
 	}
 }
 

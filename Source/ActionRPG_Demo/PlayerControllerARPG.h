@@ -48,9 +48,17 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	void OnInputStarted();
+
+	/**
+	* Moves player character to new destination
+	*/
 	void OnSetDestinationTriggered();
+
 	void OnSetDestinationReleased();
 
+	/**
+	* Manage attack input
+	*/
 	void OnInputAttack();
 
 	void OnAttack();

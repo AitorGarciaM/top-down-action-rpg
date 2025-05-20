@@ -15,6 +15,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* AttackMontage;
 
+	/** Socket name of the attack offset */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
+	FName AttackOffsetSocket;
+
 	// Sets default values for this character's properties
 	ACharacterARPG();
 
@@ -22,6 +26,11 @@ public:
 	* Performs attack animation when character attacks
 	*/
 	void PerformAttack();
+
+	/**
+	* Executes collision against enemy characters
+	*/
+	void PerformHit();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
