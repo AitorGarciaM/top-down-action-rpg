@@ -27,6 +27,9 @@ public:
 	/** Waiting Time between attacks */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
 	float AttackCooldown;
+	/** How fast will rotate to correct orientation */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
+	float RotationSpeed = 5.f;
 
 	/** Mapping Context */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = "true"))
@@ -65,11 +68,17 @@ protected:
 	void ResetAttack();
 
 private:
+	FTimerHandle RotatiomTimeHandle;
+	FRotator TargetRotation;
+
 	class ACharacterARPG* CharacterARPG;
 	FVector CacheDestination;
 
-	float PressTime; // How long it has been pressed.
-	float AttackTime; // How long it has performed.
+	float PressTime; // How long it has been pressed
+	float AttackTime; // How long it has performed
 
 	bool b_isAttacking;
+
+	void RotateToDirectionSmooth(const FVector& TargetDirection);
+	void UpdateRotationSmooth();
 };

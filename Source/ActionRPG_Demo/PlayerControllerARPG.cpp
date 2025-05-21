@@ -133,22 +133,14 @@ void APlayerControllerARPG::OnInputAttack()
 
 		if (bHitSucceded)
 		{
+			StopMovement();
+			
 			// Rotates Character to mouse position
 			FVector TargetLocation = Hit.Location;
 			FVector ActorLocation = GetPawn()->GetActorLocation();
-
 			TargetLocation.Z = ActorLocation.Z;
-
 			FVector Direction = (TargetLocation - ActorLocation).GetSafeNormal();
-
-			if (!Direction.IsNearlyZero())
-			{
-				FRotator TargetRotator = Direction.Rotation();
-				GetPawn()->SetActorRotation(TargetRotator);
-			}
-
-			StopMovement();
-			OnAttack();
+			RotateToDirectionSmooth(Direction);
 		}
 	}
 }
@@ -170,4 +162,30 @@ void APlayerControllerARPG::OnAttack()
 void APlayerControllerARPG::ResetAttack()
 {
 	b_isAttacking = false;
+}
+
+void APlayerControllerARPG::RotateToDirectionSmooth(const FVector& TargetDirection)
+{
+	if (TargetDirection.IsNearlyZero())
+	{
+		return;
+	}
+
+	TargetRotation = TargetDirection.Rotation();
+
+	GetWorld()->GetTimerManager().SetTimer(RotatiomTimeHandle, this, &APlayerControllerARPG::UpdateRotationSmooth, 0.016f, true);
+}
+
+void APlayerControllerARPG::UpdateRotationSmooth()
+{
+	FRotator CurrentRotation = GetPawn()->GetActorRotation();
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->DeltaTimeSeconds, RotationSpeed);
+
+	GetPawn()->SetActorRotation(NewRotation);
+
+	if (NewRotation.Equals(TargetRotation, 1.0f))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RotatiomTimeHandle);
+		OnAttack();
+	}
 }

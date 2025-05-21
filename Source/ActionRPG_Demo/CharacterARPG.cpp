@@ -44,7 +44,7 @@ void ACharacterARPG::PerformAttack()
 	if (AttackMontage != nullptr)
 	{
 		PlayAnimMontage(AttackMontage);
-		PerformHit();
+		//PerformHit();
 	}
 }
 
@@ -54,8 +54,7 @@ void ACharacterARPG::PerformHit()
 	FHitResult Hit;
 
 	// Set line trace from the attack socket to a point 1000cm ahead of it.
-	//FVector Start = GetMesh()->GetSocketTransform(AttackOffsetSocket, ERelativeTransformSpace::RTS_World).GetLocation();
-	FVector Start = GetActorLocation();
+	FVector Start = GetMesh()->GetSocketTransform(AttackOffsetSocket, ERelativeTransformSpace::RTS_World).GetLocation();
 	FVector End = Start + GetActorForwardVector() * 1000.f; 
 
 	FCollisionQueryParams QueryParams;
